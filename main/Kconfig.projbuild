@@ -1,5 +1,4 @@
 menu "Wifi Configuration"
-
     config ESP_WIFI_SSID
         string "WiFi SSID"
         default "myssid"

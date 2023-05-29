@@ -20,6 +20,9 @@ Usage:
 0xC0 : Single Data byte 
 0x40 : Data Stream
 */
+
+#define MAX17043_ADDRESS 0x36
+
 #define OLED_CONTROL_BYTE_CMD_SINGLE    0x80
 #define OLED_CONTROL_BYTE_CMD_STREAM    0x00
 #define OLED_CONTROL_BYTE_DATA_SINGLE   0xC0
@@ -104,7 +107,8 @@ typedef struct {
 extern "C"
 {
 #endif
-
+float max17043_read_register_soc(uint8_t reg);
+uint16_t max17043_read_register(uint8_t reg);
 void ssd1306_init(SSD1306_t * dev, int width, int height);
 int ssd1306_get_width(SSD1306_t * dev);
 int ssd1306_get_height(SSD1306_t * dev);

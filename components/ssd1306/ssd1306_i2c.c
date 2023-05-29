@@ -245,4 +245,40 @@ void i2c_hardware_scroll(SSD1306_t * dev, ssd1306_scroll_type_t scroll) {
 
 	i2c_cmd_link_delete(cmd);
 }
+uint16_t max17043_read_register(uint8_t reg)
+{
+    uint8_t data[2];
+    i2c_cmd_handle_t cmd = i2c_cmd_link_create();
+    i2c_master_start(cmd);
+    i2c_master_write_byte(cmd, (MAX17043_ADDRESS << 1) | I2C_MASTER_WRITE, true);
+    i2c_master_write_byte(cmd, reg, true);
+    i2c_master_start(cmd);
+    i2c_master_write_byte(cmd, (MAX17043_ADDRESS << 1) | I2C_MASTER_READ, true);
+    i2c_master_read_byte(cmd, &data[1], I2C_MASTER_ACK);
+    i2c_master_read_byte(cmd, &data[0], I2C_MASTER_LAST_NACK);
+    i2c_master_stop(cmd);
+    i2c_master_cmd_begin(I2C_NUM, cmd, 1000 / portTICK_PERIOD_MS);
+    i2c_cmd_link_delete(cmd);
+    return (data[1] << 8) | data[0];
+}
+
+float max17043_read_register_soc(uint8_t reg)
+{
+    uint8_t data[2];
+    i2c_cmd_handle_t cmd = i2c_cmd_link_create();
+    i2c_master_start(cmd);
+    i2c_master_write_byte(cmd, (MAX17043_ADDRESS << 1) | I2C_MASTER_WRITE, true);
+    i2c_master_write_byte(cmd, reg, true);
+    i2c_master_start(cmd);
+    i2c_master_write_byte(cmd, (MAX17043_ADDRESS << 1) | I2C_MASTER_READ, true);
+    i2c_master_read_byte(cmd, &data[1], I2C_MASTER_ACK);
+    i2c_master_read_byte(cmd, &data[0], I2C_MASTER_LAST_NACK);
+    i2c_master_stop(cmd);
+    i2c_master_cmd_begin(I2C_NUM, cmd, 1000 / portTICK_PERIOD_MS);
+    i2c_cmd_link_delete(cmd);
+    uint16_t soc = (data[1] << 8) | data[0];
+    float percent = (float)((soc & 0xFF00) >> 8);
+    percent += ((float)(soc & 0x00FF)) / 256.0;
+    return percent;
+}
 

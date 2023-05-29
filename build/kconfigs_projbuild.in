@@ -4,5 +4,4 @@ source "C:/Users/Jonathan.Wagener/esp/esp-idf/components/esp_rom/Kconfig.projbui
 source "C:/Users/Jonathan.Wagener/esp/esp-idf/components/esptool_py/Kconfig.projbuild"
 source "C:/Users/Jonathan.Wagener/esp/esp-idf/components/partition_table/Kconfig.projbuild"
 source "C:/Users/Jonathan.Wagener/Documents/sample_project/main/Kconfig.projbuild"
-source "C:/Users/Jonathan.Wagener/esp/esp-idf/examples/common_components/protocol_examples_common/Kconfig.projbuild"
 source "C:/Users/Jonathan.Wagener/Documents/sample_project/components/ssd1306/Kconfig.projbuild"

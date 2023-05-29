@@ -8,6 +8,7 @@
 #include "esp_event.h"          /* ESP32 event handling */
 #include "esp_log.h"            /* ESP32 logging functions */
 #include "nvs_flash.h"          /* Non-volatile storage (NVS) flash functions */
+#include "driver/i2c.h"
 
 #include "driver/gpio.h"        /* GPIO driver for ESP32 */
 
@@ -399,24 +400,19 @@ void app_main(void)
 	vTaskDelay(5000 / portTICK_PERIOD_MS);
 	ssd1306_clear_screen(&dev, false);
 	float soc = 0;
+    float voltage;
 	while (1)
 	{
-		soc = soc + 1.5;
-
-		if (soc > 100)
+		soc = max17043_read_register_soc(0x04);
+        printf("State of charge: %.2f%%\n", soc);
+        uint16_t voltageRaw = max17043_read_register(0x02);
+        voltage = ((voltageRaw >> 4) * 0.00125);
+        if (100 < soc)
 		{
-			// Restart module
-			soc = 0;
-			ssd1306_clear_screen(&dev, false);
-			ssd1306_contrast(&dev, 0xff);
-			ssd1306_bitmaps(&dev, 0, 0, cbi_logo, 128, 32, false);
-			vTaskDelay(5000 / portTICK_PERIOD_MS);
-			ssd1306_clear_screen(&dev, false);
-		}
-		sprintf(&lineChar, "\t\t\t\t\t\t\t\t%5.2f%%", soc);
-		ssd1306_display_text(&dev,0, lineChar, strlen(lineChar), false);
-		
-		
+			soc = 100.00;
+        }
+            sprintf(&lineChar, "%3.2fV\t\t%6.2f%%", voltage,soc);
+		    ssd1306_display_text(&dev,0, lineChar, strlen(lineChar), false);
 		if (soc <= 25.00)
 		{
 			ssd1306_bitmaps(&dev, 112, 0, Batt_Empty, 16, 8, false);
@@ -438,5 +434,4 @@ void app_main(void)
 		vTaskDelay(500 / portTICK_PERIOD_MS);
 		
 	}
-	
 }
