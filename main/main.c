@@ -404,15 +404,15 @@ void app_main(void)
 	while (1)
 	{
 		soc = max17043_read_register_soc(0x04);
-        printf("State of charge: %.2f%%\n", soc);
         uint16_t voltageRaw = max17043_read_register(0x02);
         voltage = ((voltageRaw >> 4) * 0.00125);
         if (100 < soc)
 		{
 			soc = 100.00;
         }
-            sprintf(&lineChar, "%3.2fV\t\t%6.2f%%", voltage,soc);
-		    ssd1306_display_text(&dev,0, lineChar, strlen(lineChar), false);
+        ESP_LOGI(TAG,"SOC:%.2f%% \t Voltage:%3.2fV\n", soc,voltage);
+        sprintf(&lineChar, "%3.2fV\t\t%6.2f%%", voltage,soc);
+		ssd1306_display_text(&dev,0, lineChar, strlen(lineChar), false);
 		if (soc <= 25.00)
 		{
 			ssd1306_bitmaps(&dev, 112, 0, Batt_Empty, 16, 8, false);
